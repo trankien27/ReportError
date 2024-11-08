@@ -1,0 +1,131 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 100px;
+}
+.pageInput{
+  font-weight: 700;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+}
+.pagination{
+  margin-top: 20px;
+  display: flex;
+  list-style: none;
+  padding: 0;
+
+} 
+td.detailErr {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.active a{
+  background-color: #1678C2;
+  color: white !important;
+}
+.pagination li{
+  cursor: pointer;
+  margin-right: 5px; 
+  
+}
+.pagination li:hover{
+  background-color: #c7cfd5;
+}
+.pagination li a{
+  display: block;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #333;
+  text-decoration: none;
+}
+
+.page-item.disabled .page-link {
+  color: #6c757d; /* Example disabled state color */
+  pointer-events: none;
+  cursor: default;
+}
+.input-group{
+ margin-top: -260px; 
+
+}
+.btn-add{  
+  position: absolute;
+  margin-top: -260px; 
+  right: 208px;
+
+}
+.btn-filter{  
+  position: absolute;
+  margin-top: -260px; 
+  right: 700px;
+
+}
+.btn{
+  background-color: #1678C2;
+  color: white;
+}
+.container {
+  display: flex;
+  align-items: center; /* Canh giữa các phần tử theo chiều dọc */
+  gap: 10px; /* Khoảng cách giữa các phần tử */
+}
+
+.input-group {
+  position: relative; /* Để đặt icon bên trong input */
+  display: flex;
+  align-items: center;
+}
+
+.input-group input,
+.input-group select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-group i {
+  position: absolute;
+  right: 10px; /* Điều chỉnh vị trí icon */
+  pointer-events: none; /* Ngăn chặn icon nhận sự kiện click */
+}
+.input-group a {
+  float: right;
+
+}
+.input-group  {
+
+  display: flex;
+  gap: 10px;
+}
+table {
+  table-layout: fixed;
+  border: 1px solid #ddd;
+  margin-top:-100px;
+  width: 100%;
+  border-collapse: collapse;
+}
+tr{
+  text-align: center;
+  border: 1px solid #ddd;
+}
+th, td {
+
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+td.date{
+  text-align: center;
+}
+th{
+  padding-right: 15px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
