@@ -1,12 +1,30 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import axios from "axios";
-import ReactPaginate from "react-paginate";
 import { toast, ToastContainer } from "react-toastify";
-
+import ReactPaginate from "react-paginate";
+import { DateRangePicker } from 'rsuite';
+import dayjs from "dayjs";
+import moment from "moment";
 function App() {
+
+//test area
+
+const dateNow = new Date(
+)
+// const formatDate =(date) =>{
+// var dateFormat =  date.toLocaleDateString('vi-VN', {
+//     day: '2-digit',
+//     month: '2-digit',
+//     year: '2-digit',
+//     hour: 'numeric',
+//     minute: '2-digit'
+//   });
+//   return dateFormat;
+// }
+
+
+//end test area
   const Funs = [
     "Fun 1",
     "Fun 2",
@@ -21,84 +39,80 @@ function App() {
     "Fun 12",
     "string",
   ];
-  const [inputPage, setInputPage] = useState();
   const [shopValue, setShopValue] = useState(" ");
   const[typeErr,setTypeErr] =useState(" ");
+  const[fromDate,setFromDate] = useState(new Date());
+  const[toDate,setToDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState(1);
   const [numberPage, setNumberPage] = useState();
   const [listErr, setListErr] = useState([]);
-  if (currentPage <= 0) {
-    setCurrentPage(1);
-  }
-
   const hanldeCreate = () => toast.success("Wow so easy!");
-  if (currentPage > numberPage) {
-    setCurrentPage(numberPage);
-  }
+
   const handleClickPage = (index) => {
     setCurrentPage(index);
+    
   };
 
-  const handleInputPage = (e) => {
-    setInputPage(e);
-  };
   const handleFilterShop = (e) => {
+    setCurrentPage(1);
     setShopValue(e);
+  
   };
   const handleFilterTypeErr = (e) => {
+    setCurrentPage(1);
     setTypeErr(e);
   };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "https://localhost:7156/filter?shop="+
+         shopValue+
+            "&"+
+         "typeError="+typeErr+
+         "&pageNumber="+ currentPage+"&pageSize=10"
+      );
+  console.log(response.data);
+      
+      setListErr(response.data.items);
+      console.log(dayjs(listErr[1].timeReport)
+      .format('DD-MM-YYYY HH:mm')
+    );
+   
+  var totalItem =response.data.totalItem;
+  var totalPages = (Math.ceil(totalItem / 10));
+  console.log((totalItem/10));
+  setNumberPage(totalPages);
 
-
-  const hanldeSearch = () => {
-    setCurrentPage(inputPage);
-    console.log("done");
+    } catch (error) {
+      console.error("loi khi lay du lieu", error);
+    }
   };
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://localhost:7156/filter?shop="+
-           shopValue+
-              "&"+
-           "typeError="+typeErr+
-           "&pageNumber="+ currentPage+"&pageSize=8"
-        );
-    
-        
-        setListErr(response.data.items);
-    
-
-        setNumberPage(response.data.totalPages);
-        // setNumberPage(11);
-      } catch (error) {
-        console.error("loi khi lay du lieu", error);
-      }
-    };
     fetchData();
   
   }, [currentPage,shopValue,typeErr]);
+const handleRange =(e)=>{
+ setToDate(dayjs(listErr[0].timeReport)
+  .format('YYYY-MM-DD'));
+  setFromDate(dayjs(listErr[0].timeReport)
+  .format('YYYY-MM-DD'));
+console.log(toDate,fromDate);
+
+}
 
   return (
     <>
       <div class="container">
-        <div class="input-group">
-          <label htmlFor="time">Thời gian</label>
-          <select className="time">
-            <option value="option1">Tháng 1</option>
-            <option value="option2">Tháng 2</option>
-          </select>
-        </div>
+      <DateRangePicker onChange={(e)=>handleRange(e)} className="input-group" ranges={[]} />
         <div class="input-group">
           <label htmlFor="shop">Cửa hàng</label>
           <select
             onChange={(e) => handleFilterShop(e.target.value)}
             placeholder="Cửa hàng"
             value={shopValue}
-            // onChange={(e) => setShopValue(e.target.value)}
             className="shop"
           >
+            <option value=" ">Cửa hàng</option>
             {Funs.map((fun) => (
               <option value={fun}>{fun}</option>
             ))}
@@ -107,13 +121,11 @@ function App() {
         <div class="input-group">
           <label htmlFor="typeError">Kiểu lỗi </label>
           <select className="typeError" value={typeErr} onChange={(e)=>handleFilterTypeErr(e.target.value)}>
+          <option class="blurred" value=" ">Loại lỗi</option>
             <option value="Bộ nhận tiền">Bộ nhận tiền</option>
             <option value="Máy ảnh">Máy ảnh</option>
           </select>
         </div>
-        {/* <div class="btn-filter">
-          <button onClick={handleFilter} class="btn">Lọc</button>
-        </div> */}
         <div class="btn-add">
           <button onClick={hanldeCreate} class="btn">
             Thêm mới
@@ -138,12 +150,13 @@ function App() {
         <tbody>
  
 
-        {listErr ? (
+        {listErr.length>0 ? (
   listErr.map((err) => (
     <tr>
       <td>{err.shop}</td>
       <td className="reporter">{err.issueReporter}</td>
-      <td className="date">{err.timeReport}</td>
+      <td className="date">{dayjs(err.timeReport)
+      .format('DD-MM-YYYY HH:mm')}</td>
       <td>{err.descriptionError}</td>
       <td>{err.errorChecker}</td>
       <td className="detailErr">{err.errorDetails}</td>
@@ -159,68 +172,25 @@ function App() {
    
         </tbody>
       </table>
-      {numberPage > 10 ? (
-        <div className="pagination">
-          {/* <li><a onClick={handleClickPrev}>Trước</a></li> */}
-          {Array.from({ length: 6 }, (_, index) => (
-            <div key={index}>
-              {index + 1 == currentPage ? (
-                <li className="active">
-                  <a
-                    onClick={(index) => handleClickPage(index.target.innerText)}
-                  >
-                    {index + 1}
-                  </a>
-                </li>
-              ) : (
-                <li>
-                  <a
-                    onClick={(index) => handleClickPage(index.target.innerText)}
-                  >
-                    {index + 1}
-                  </a>
-                </li>
-              )}
-            </div>
-          ))}
-          <li>
-            <input
-              onChange={(e) => handleInputPage(e.target.value)}
-              placeholder="...."
-              className="pageInput"
-            ></input>
-          </li>
-          <li>
-            <a onClick={hanldeSearch}>Tìm trang</a>
-          </li>
-        </div>
-      ) : (
-        <div className="pagination">
-          {/* <li><a onClick={handleClickPrev}>Trước</a></li> */}
-          {Array.from({ length: numberPage }, (_, index) => (
-            <div key={index}>
-              {index + 1 == currentPage ? (
-                <li className="active">
-                  <a
-                    onClick={(index) => handleClickPage(index.target.innerText)}
-                  >
-                    {index + 1}
-                  </a>
-                </li>
-              ) : (
-                <li>
-                  <a
-                    onClick={(index) => handleClickPage(index.target.innerText)}
-                  >
-                    {index + 1}
-                  </a>
-                </li>
-              )}
-            </div>
-          ))}
-          {/* <li><a onClick={handleClickNext}>Sau</a></li> */}
-        </div>
-      )}
+
+            <ReactPaginate className="pagination"
+            prevRel={null}
+          //  onPageActive={()}
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={(e)=>handleClickPage(e.selected+1)}
+        pageRangeDisplayed={5}
+        pageCount={numberPage}
+              activeClassName="active"
+                       pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousClassName="page-item"
+            previousLinkClassName="page-link"
+            nextClassName="page-item"
+            nextLinkClassName="page-link"
+        previousLabel="< previous"
+        renderOnZeroPageCount={()=>console.log("0") }
+      />
     </>
   );
 }

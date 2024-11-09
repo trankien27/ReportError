@@ -1,3 +1,4 @@
+@import "rsuite/dist/rsuite.css";
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -19,6 +20,14 @@
 
 } 
 td.detailErr {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blurred {
+  filter: blur(5px);
+}
+td.reporter {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -56,8 +65,12 @@ td.detailErr {
 .btn-add{  
   position: absolute;
   margin-top: -260px; 
-  right: 208px;
+  right: 212px;
 
+
+}
+button.btn{
+  border-radius: 5px;
 }
 .btn-filter{  
   position: absolute;
@@ -121,6 +134,9 @@ th, td {
 }
 td.date{
   text-align: center;
+    overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 th{
   padding-right: 15px;
